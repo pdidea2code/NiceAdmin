@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>get Images</title>
+    <meta content="" name="description" />
+    <meta content="" name="keywords" />
+
+    <%-include('./style') %>
+
+</head>
+
+<body>
+    <%- include('./heder') %>
+        <%- include('./sidebar') %>
+            <main id="main" class="main">
+
+                <div class="pagetitle">
+                    <h1>Get Images</h1>
+                    <nav>
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="">Home</a></li>
+                            <li class="breadcrumb-item">Dashboard</li>
+                        </ol>
+                    </nav>
+                </div>
+
+                <section class="section dashboard">
+                    <div class="row">
+                        <!-- Left side columns -->
+                        <div class="col-lg-7">
+                            <p id="images" hidden>
+                                <%= images %>
+                            </p>
+    
+                            <p id="videos" hidden>
+                                <%= videos %>
+                            </p>
+    
+                           
+    
+                            <% if(item==404){%>
+                                <%- include('./error-page-404',{data:message}) %>
+                                    <% }else{ %>
+                                        <% item.forEach(function(data) { %>
+                                            <div class="image-container mt-5 bo">
+                                                <% if(data.mimetype=="image" ){%>
+                                                    <img id="<%= data._id%>"
+                                                        src="<%= 'http://localhost:5000/images/' + data.name %>"
+                                                        class="img-thumbnail" style="max-height: 600px; width: 750px"
+                                                        alt="img" />
+                                                    <button type="button" class="delete-btn btn btn-outline-primary"
+                                                        data-image-id="<%= data._id %>">Delete</button>
+    
+                                                    <%} else{%>
+                                                        <video width="640" height="360" controls>
+                                                            <source src="<%= 'http://localhost:5000/images/' + data.name %>"
+                                                                type="video/webm" />
+                                                            <button class="play-btn">Play</button>
+                                                            <!-- <input type="range" class="volume-control" min="0" max="1" step="0.1" value="1"> -->
+                                                            <button class="fullscreen-btn">Fullscreen</button>
+                                                            <progress class="progress-bar" value="0" max="100"></progress>
+                                                            Your browser does not support the video tag.
+                                                        </video>
+    
+                                                        <button type="button" class="delete-btn btn btn-outline-primary"
+                                                            data-image-id="<%= data._id %>">Delete</button>
+    
+                                                        <%}%>
+                                            </div>
+                                            <% })} %>
+                        </div><!-- End Left side columns -->
+                        <!-- Right side columns -->
+                        <div class="col-lg-5 ">
+                            <!-- start alerts-->
+                            <div class="alert alert-danger bg-danger text-light border-0 alert-dismissible fade show"
+                                style="z-index: 1; display: none;position: fixed; top:70px; right:20px" id="error" role="alert">
+                                <span id="errormsg">something went wrong</span><button type="button" class="btn-close"
+                                    data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                            <div class="alert alert-success bg-success text-light border-0 alert-dismissible fade show"
+                                style="z-index: 1;display: none;position: fixed; top:70px; right:20px" id="alert" role="alert">
+                                delete successfully<button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                            <!-- end alerts-->
+
+                            <!-- Slides only carousel -->
+                            <section class="section">
+                                <div class="row">
+                                    <div>
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5 class="card-title">With indicators</h5>
+    
+                                                <!-- Slides with indicators -->
+                                                <div id="carouselExampleIndicators" class="carousel slide"
+                                                    data-bs-ride="carousel">
+                                                    <div class="carousel-indicators">
+                                                        <button type="button" data-bs-target="#carouselExampleIndicators"
+                                                            data-bs-slide-to="0" class="active" aria-current="true"
+                                                            aria-label="Slide 1"></button>
+                                                        <button type="button" data-bs-target="#carouselExampleIndicators"
+                                                            data-bs-slide-to="1" aria-label="Slide 2"></button>
+                                                        <button type="button" data-bs-target="#carouselExampleIndicators"
+                                                            data-bs-slide-to="2" aria-label="Slide 3"></button>
+                                                    </div>
+                                                    <div class="carousel-inner">
+                                                        <div class="carousel-item active">
+                                                            <img src="assets/img/slides-1.jpg" class="d-block w-100"
+                                                                alt="...">
+                                                        </div>
+                                                        <div class="carousel-item">
+                                                            <img src="assets/img/slides-2.jpg" class="d-block w-100"
+                                                                alt="...">
+                                                        </div>
+                                                        <div class="carousel-item">
+                                                            <img src="assets/img/slides-3.jpg" class="d-block w-100"
+                                                                alt="...">
+                                                        </div>
+                                                    </div>
+    
+                                                    <button class="carousel-control-prev" type="button"
+                                                        data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                        <span class="visually-hidden">Previous</span>
+                                                    </button>
+                                                    <button class="carousel-control-next" type="button"
+                                                        data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                        <span class="visually-hidden">Next</span>
+                                                    </button>
+    
+                                                </div><!-- End Slides with indicators -->
+    
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <!-- End Slides only carousel-->
+
+                            <div>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Doughnut Chart</h5>
+    
+                                        <!-- Doughnut Chart -->
+                                        <canvas id="doughnutChart" style="max-height: 400px"></canvas>
+                                        <script>
+                                            const images = document.getElementById("images").innerHTML
+                                            const videos = document.getElementById("videos").innerHTML
+                                            document.addEventListener("DOMContentLoaded", () => {
+                                                new Chart(document.querySelector('#doughnutChart'), {
+                                                    type: 'doughnut',
+                                                    toolbar: {
+                                              show: true
+                                            },
+                                                    data: {
+                                                        labels: [
+                                                            'image',
+                                                            'video',
+                                                        ],
+                                                        datasets: [{
+                                                            label: 'Count',
+                                                            data: [images, videos],
+                                                            backgroundColor: [
+                                                                'rgb(255, 99, 132)',
+                                                                'rgb(54, 162, 235)',
+                                                            ],
+                                                            hoverOffset: 4
+                                                        }]
+                                                    }
+                                                });
+                                            });
+                                        </script>
+                                        <!-- End Doughnut CHart -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+
+                        </div><!-- End Right side columns -->                
+
+                    </div>
+                </section>
+            </main><!-- End #main -->
+
+            <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+                    class="bi bi-arrow-up-short"></i></a>
+
+            <%- include('./footer') %>
+
+
+
+                <script>
+
+                    document.querySelectorAll(".delete-btn").forEach((button) => {
+                        button.addEventListener("click", async () => {
+                            const imageId = button.dataset.imageId;
+                            try {
+                                const response = await fetch(`/delete-image/${imageId}`, {
+                                    method: "DELETE",
+                                });
+                                if (response.ok) {
+                                    // Reload the page or remove the image from DOM
+                                    button.parentNode.remove(); // Remove the image container div
+                                    document.getElementById("alert").style.display = "block"
+                                    setTimeout(() => { document.getElementById("alert").style.display = "none" }, 3000)
+                                    // document.getElementById("alert").innerHTML= `smple info alert—check it out! <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`
+                                    // Alternatively, you can reload the page:
+                                    // window.location.reload();
+                                } else {
+                                    document.getElementById("error").style.display = "block"
+                                    setTimeout(() => { document.getElementById("error").style.display = "none" }, 3000)
+                                    console.error("Failed to delete image");
+
+                                }
+                            } catch (error) {
+                                document.getElementById("errormsg").innerHTML = error.message
+                                document.getElementById("error").style.display = "block"
+                                setTimeout(() => { document.getElementById("error").style.display = "none" }, 3000)
+                                console.error("Error deleting image:", error);
+                            }
+                        });
+                    });
+
+
+                </script>
+
+</body>
+
+</html>

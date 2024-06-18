@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Home Page</title>
+    <style type="text/css" media="screen">
+        body {
+            text-decoration-color: white;
+            font-size: 7em;
+        }
+
+        button:hover {
+            font-size: 20px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+        }
+
+        input:checked+.slider {
+            background-color: #2196F3;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(26px);
+        }
+
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+    </style>
+</head>
+
+<body>
+    <%- include('./heder') %>
+        <%- include('./sidebar') %>
+            <main id="main" class="main">
+                <div class="alert alert-danger bg-danger text-light border-0 alert-dismissible fade show"
+                    style="z-index: 1; display: none;position: fixed; top:70px; right:20px" id="error" role="alert">
+                    <span id="errormsg">something went wrong</span><button type="button" class="btn-close"
+                        data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div class="alert alert-success bg-success text-light border-0 alert-dismissible fade show"
+                    style="z-index: 1;display: none;position: fixed; top:70px; right:20px" id="alert" role="alert">
+                    <span id="successmsg">delete successfully</span><button type="button" class="btn-close"
+                        data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div class="pagetitle">
+                    <h1>Data Tables</h1>
+                    <nav>
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/upload">Home</a></li>
+                            <li class="breadcrumb-item">Tables</li>
+                            <li class="breadcrumb-item active">Data</li>
+                        </ol>
+                    </nav>
+                </div><!-- End Page Title -->
+
+                <section class="section">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Datatables</h5>
+                                   
+
+                                    <!-- Table with stripped rows -->
+                                    <table class="table datatable">
+                                        <thead>
+                                            <tr>
+                                                <th>Id</th>
+                                                <th>Name</th>
+                                                <th>mimetype</th>
+                                                <th>Status</th>
+                                                <th>opration</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% data.forEach(function(data){ %>
+                                                <tr id="<%=data._id%>">
+                                                    <td>
+                                                        <%= data._id%>
+                                                    </td>
+                                                    <td>
+                                                        <%= data.name%>
+                                                    </td>
+                                                    <td>
+                                                        <%= data.mimetype%>
+                                                    </td>
+                                                    <td>
+                                                        <label class="switch">
+                                                            <input type="checkbox" class="status-toggle"
+                                                                data-image-id="<%= data._id%>" <%=data.status
+                                                                ? 'checked' : '' %>>
+                                                            <span class="slider round"></span>
+                                                        </label>
+                                                    </td>
+                                                    <td>
+                                                    
+                                                        <button class="btn delete-btn btn-danger"
+                                                            data-image-id="<%= data._id%>">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                        <button class="btn edit-btn btn-dark"
+                                                            data-image-id="<%= data._id%>">
+                                                            <i class="ri-image-edit-line"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <% }) %>
+                                        </tbody>
+                                    </table>
+                                    <!-- End Table with stripped rows -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+            <!-- End #main -->
+
+            <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+                    class="bi bi-arrow-up-short"></i></a>
+
+            <%- include('./footer') %>
+
+                <!-- Modal for file upload -->
+
+                <div id="uploadModal" class="modal">
+                    <main id="main" class="main">
+                        <div class="modal-content">
+                            <span class="close">&times;</span>
+                            <form id="uploadForm" enctype="multipart/form-data">
+                                <input type="file" class="form-control" name="file" required><br>
+                                <button type="button" id="updateButton" class="btn btn-primary wi">Update</button>
+                                
+                            </form>
+                        </div>
+                    </main>
+                </div>
+
+                <script>
+                    // Show modal on edit button click
+                    document.querySelectorAll(".edit-btn").forEach((button) => {
+                        button.addEventListener("click", () => {
+                            const imageId = button.dataset.imageId;
+
+                            document.getElementById("uploadForm").dataset.imageId = imageId;
+                            document.getElementById("uploadModal").style.display = "block";
+                        });
+                    });
+
+                    // Close modal
+                    document.querySelector(".close").addEventListener("click", () => {
+                        document.getElementById("uploadModal").style.display = "none";
+                    });
+
+                    // Update image on update button click
+                    document.getElementById("updateButton").addEventListener("click", async () => {
+                        const form = document.getElementById("uploadForm");
+                        const imageId = form.dataset.imageId;
+                        const formData = new FormData(form);
+
+                        try {
+                            const response = await fetch(`/update-image-data/${imageId}`, {
+                                method: "PUT",
+                                body: formData,
+                            });
+
+                            if (response.ok) {
+                                console.log("object")
+                                document.getElementById("uploadModal").style.display = "none";
+                                document.getElementById("alert").style.display = "block"
+                                document.getElementById("successmsg").innerHTML = "Update Successfully"
+                                setTimeout(() => {
+                                    document.getElementById("alert").style.display = "none"
+                                    location.reload();
+                                }, 1000)
+
+                                // Optionally update the table row or give feedback to the user
+                            } else {
+                                console.error("Failed to update image");
+                                document.getElementById("errormsg").innerHTML = "Failed to update image"
+                                document.getElementById("error").style.display = "block"
+                                document.getElementById("uploadModal").style.display = "none";
+                                setTimeout(() => {
+                                    document.getElementById("error").style.display = "none"
+
+                                }, 3000)
+                            }
+                        } catch (error) {
+
+                            document.getElementById("errormsg").innerHTML = error.message
+                            document.getElementById("error").style.display = "block"
+                            document.getElementById("uploadModal").style.display = "none";
+                            setTimeout(() => {
+                                document.getElementById("error").style.display = "none"
+
+                            }, 3000)
+                            console.error("Error updating image:", error);
+                        }
+                    });
+
+                    // Delete image on delete button click
+                    document.querySelectorAll(".delete-btn").forEach((button) => {
+                        button.addEventListener("click", async () => {
+                            const imageId = button.dataset.imageId;
+                            try {
+                                const response = await fetch(`/delete-image-data/${imageId}`, {
+                                    method: "DELETE",
+                                });
+                                if (response.ok) {
+                                    document.getElementById(`${imageId}`).remove();
+                                    button.parentNode.remove();
+                                    document.getElementById("alert").style.display = "block"
+                                    document.getElementById("successmsg").innerHTML = "Delete Successfully"
+                                    setTimeout(() => {
+                                        document.getElementById("alert").style.display = "none"
+
+                                    }, 3000)
+                                } else {
+                                    console.error("Failed to delete image");
+                                    document.getElementById("errormsg").innerHTML = "Failed to delete image"
+                                    document.getElementById("error").style.display = "block"
+                                    setTimeout(() => {
+                                        document.getElementById("error").style.display = "none"
+
+                                    }, 3000)
+                                }
+                            } catch (error) {
+                                document.getElementById("errormsg").innerHTML = error.message
+                                document.getElementById("error").style.display = "block"
+                                setTimeout(() => {
+                                    document.getElementById("error").style.display = "none"
+
+                                }, 3000)
+                                console.error("Error deleting image:", error);
+                            }
+                        });
+                    });
+
+                    // Toggle status on switch change
+                    document.querySelectorAll(".status-toggle").forEach((toggle) => {
+                        toggle.addEventListener("change", async () => {
+                            const imageId = toggle.dataset.imageId;
+                            const status = toggle.checked;
+
+                            try {
+                                const response = await fetch(`/update-image-status/${imageId}`, {
+                                    method: "PUT",
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                    },
+                                    body: JSON.stringify({ status }),
+                                });
+
+                                if (response.ok) {
+                                    document.getElementById("alert").style.display = "block"
+                                    document.getElementById("successmsg").innerHTML = "Status Updated Successfully"
+                                    setTimeout(() => {
+                                        document.getElementById("alert").style.display = "none"
+                                    }, 3000)
+                                } else {
+                                    console.error("Failed to update status");
+                                    document.getElementById("errormsg").innerHTML = "Failed to update status"
+                                    document.getElementById("error").style.display = "block"
+                                    setTimeout(() => {
+                                        document.getElementById("error").style.display = "none"
+
+                                    }, 3000)
+                                }
+                            } catch (error) {
+                                document.getElementById("errormsg").innerHTML = error.message
+                                document.getElementById("error").style.display = "block"
+                                setTimeout(() => {
+                                    document.getElementById("error").style.display = "none"
+                                }, 3000)
+                                console.error("Error updating status:", error);
+                            }
+                        });
+                    });
+                </script>
+
+                <style>
+                    /* Modal styles */
+                    .modal {
+                        display: none;
+                        position: fixed;
+                        z-index: 1;
+                        left: 0;
+                        top: 0;
+                        width: 100%;
+                        height: 100%;
+                        overflow: auto;
+                        background-color: rgb(0, 0, 0);
+                        background-color: rgba(0, 0, 0, 0.4);
+                        padding-top: 60px;
+                    }
+
+                    .modal-content {
+                        background-color: #fefefe;
+                        margin: 5% auto;
+                        padding: 20px;
+                        border: 1px solid #888;
+                        width: 80%;
+                    }
+
+                    .close {
+                        color: #aaa;
+                        float: right;
+                        font-size: 28px;
+                        font-weight: bold;
+                    }
+
+                    .close:hover,
+                    .close:focus {
+                        color: black;
+                        text-decoration: none;
+                        cursor: pointer;
+                    }
+                </style>
+</body>
+
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Home Page</title>
+   
+    <style type="text/css" media="screen">
+        body {
+            /* background-color: skyblue; */
+            text-decoration-color: white;
+            font-size: 7em;
+        }
+    </style>
+</head>
+
+<body>
+    <%- include('./heder') %>
+    <%- include('./sidebar') %>
+    <main id="main" class="main">
+        <div class="pagetitle">
+            <h1>Upload Images</h1>
+            <nav>
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/getimg">Home</a></li>
+                <li class="breadcrumb-item">Upload Image</li>
+              </ol>
+            </nav>
+          </div>
+        <form action="/imgadd" method="post" enctype="multipart/form-data">
+            <div class="input-group mb-3 w-50">
+                <input type="file" placeholder="Only Video File Select" class="form-control" id="inputGroupFile03"  aria-describedby="inputGroupFileAddon03"
+                    width="100px" name="iamge" aria-label="Upload" multiple> 
+                   
+                <button class="btn btn-primary wi" type="submit" id="inputGroupFileAddon03">Upload</button>
+            </div>
+            <% if (typeof error !== 'undefined') { %>
+                <span><%= error %></span>   
+            <% } %>
+        </form>
+        </main>
+    <%- include('./footer') %>
+        
+        <!-- accept="image/*"  -->
+</body>
+
+</html>
