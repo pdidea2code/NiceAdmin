@@ -5,6 +5,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const session = require("express-session");
+require("dotenv").config()
 
 const deleteFiles = (files) => {
   const basePath = path.join(__dirname, "./uploads");
@@ -44,7 +45,7 @@ const deleteFiles = (files) => {
 
 mongoose
   .connect(
-    //connection URL
+    process.env.DB_URL
   )
   .then((data) => {
     console.log("db connected");
